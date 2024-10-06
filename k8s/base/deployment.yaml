@@ -1,0 +1,121 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: codeserver-0-app
+  labels:
+    app.kubernetes.io/instance: codeserver-0-app
+    tags.datadoghq.com/env: dev
+    tags.datadoghq.com/service: sample
+    tags.datadoghq.com/version: 0.0.1
+  annotations:
+    alpha.image.policy.openshift.io/resolve-names: '*' # 이미지스트림을 인식 하도록 설정
+    image.openshift.io/triggers: >- # 이미지 변경시 트리거(재배포)
+      [{"from":{"kind":"ImageStreamTag","name":"codeserver-0-app:latest"},"fieldPath":"spec.template.spec.containers[?(@.name==\"codeserver-0-app\")].image"}]
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: codeserver-0-app
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/scheme: "http"
+        prometheus.io/path: "/actuator/prometheus"
+        admission.datadoghq.com/java-lib.version: v1.37.0
+        agent.datadoghq.com/component: cluster-agent
+        agent.datadoghq.com/name: datadog
+      labels:
+        app: codeserver-0-app
+        deploymentconfig: codeserver-0-app
+        admission.datadoghq.com/enabled: 'true'
+        tags.datadoghq.com/env: dev
+        tags.datadoghq.com/service: sample
+        tags.datadoghq.com/version: 0.0.1
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - worker01.dev.honecloud.co.kr
+                      - worker02.dev.honecloud.co.kr
+                      - worker03.dev.honecloud.co.kr
+                      - worker04.dev.honecloud.co.kr
+                      - worker06.dev.honecloud.co.kr
+      containers:
+        - resources:
+            limits:
+              cpu: '1'
+              memory: 1Gi
+            requests:
+              cpu: 200m
+              memory: 200Mi
+          name: codeserver-0-app
+          image: codeserver-0-app:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              name: kube-api-access-5lgr4
+              readOnly: true
+          env:
+            - name: DD_LOGS_INJECTION
+              value: 'true'
+            - name: DD_TRACE_SAMPLE_RATE
+              value: '10'
+            - name: DD_ENV
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: 'metadata.labels[''tags.datadoghq.com/env'']'
+            - name: DD_SERVICE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: 'metadata.labels[''tags.datadoghq.com/service'']'
+            - name: DD_VERSION
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: 'metadata.labels[''tags.datadoghq.com/version'']'
+          command:
+            - java
+          args:
+            - '-javaagent:/datadog-lib/dd-java-agent.jar'
+            - '-Ddd.profiling.enabled=true'
+            - '-XX:FlightRecorderOptions=stackdepth=256'
+            - '-Ddd.logs.injection=true'
+            - '-Ddd.service=sample'
+            - '-Ddd.env=dev'
+            - '-Ddd.version=0.0.1'
+            - '-jar'
+            - /app.jar
+      volumes:
+        - name: kube-api-access-5lgr4
+          projected:
+            defaultMode: 420
+            sources:
+              - serviceAccountToken:
+                  expirationSeconds: 3607
+                  path: token
+              - configMap:
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+                  name: kube-root-ca.crt
+              - downwardAPI:
+                  items:
+                    - fieldRef:
+                        apiVersion: v1
+                        fieldPath: metadata.namespace
+                      path: namespace
+              - configMap:
+                  items:
+                    - key: service-ca.crt
+                      path: service-ca.crt
+                  name: openshift-service-ca.crt

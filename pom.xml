@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.18</version>
+		<relativePath/>
+	</parent>
+	<groupId>com.dev</groupId>
+	<artifactId>boot-test-app1</artifactId>
+	<version>${hict.app.version}</version>
+	<name>hict-sample-boot</name>
+	<description>springboot 2.7 example</description>
+	<properties>
+		<!-- framework version -->
+		<hict.app.number.version>0.0.1</hict.app.number.version>
+		<hict.app.version>dev-${hict.app.number.version}-SNAPSHOT</hict.app.version>
+		<java.version>11</java.version>
+		<mybatis.spring.boot.starter.version>2.3.0</mybatis.spring.boot.starter.version>
+		<commons.beanutils.version>1.9.4</commons.beanutils.version>
+		<commons.io.version>2.11.0</commons.io.version>
+		<commons.text.version>1.10.0</commons.text.version>
+		<spring.cloud.starter.sleuth.version>3.1.5</spring.cloud.starter.sleuth.version>
+		<spring.cloud.starter.stream.version>3.2.6</spring.cloud.starter.stream.version>
+		<joda.time.version>2.12.2</joda.time.version>
+		<poi.version>5.2.3</poi.version>
+		<springdoc.openapi.ui.version>1.6.15</springdoc.openapi.ui.version>
+		<logbook.spring.boot.starter.version>2.16.0</logbook.spring.boot.starter.version>
+		<jasypt.spring.boot.starter.version>3.0.5</jasypt.spring.boot.starter.version>
+		<bcprov.jdk15on.version>1.69</bcprov.jdk15on.version>
+		<log4jdbc-log4j2-jdbc4.1.version>1.16</log4jdbc-log4j2-jdbc4.1.version>
+		<google.collections.version>1.0</google.collections.version>
+		<gson.version>2.10.1</gson.version>
+		<grpc.springboot.version>2.15.0.RELEASE</grpc.springboot.version>
+		<io.grpc.version>1.65.1</io.grpc.version>
+		<protobuf.maven.plugin.version>0.6.1</protobuf.maven.plugin.version>
+		<protoc.version>4.27.3</protoc.version>
+	</properties>
+	
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<hict.app.version>dev-${hict.app.number.version}-SNAPSHOT</hict.app.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<hict.app.version>test-${hict.app.number.version}-SNAPSHOT</hict.app.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>prd</id>
+			<properties>
+				<hict.app.version>${hict.app.number.version}-SNAPSHOT</hict.app.version>
+			</properties>
+		</profile>
+	</profiles>
+
+
+	<dependencies>
+
+	    <!-- web -->
+        <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- rest -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+
+		<!-- jdbc -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jdbc</artifactId>
+		</dependency>
+
+		<!-- JPA -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-jpa -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-jpa</artifactId>
+			<version>2.23.1</version>
+		</dependency>
+
+
+        <!-- lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		
+
+		<!-- https://mvnrepository.com/artifact/net.devh/grpc-server-spring-boot-autoconfigure -->
+		<dependency>
+			<groupId>net.devh</groupId>
+			<artifactId>grpc-server-spring-boot-autoconfigure</artifactId>
+			<version>${grpc.springboot.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/net.devh/grpc-server-spring-boot-starter -->
+		<dependency>
+			<groupId>net.devh</groupId>
+			<artifactId>grpc-server-spring-boot-starter</artifactId>
+			<version>${grpc.springboot.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/net.devh/grpc-client-spring-boot-starter -->
+		<dependency>
+			<groupId>net.devh</groupId>
+			<artifactId>grpc-client-spring-boot-starter</artifactId>
+			<version>${grpc.springboot.version}</version>
+		</dependency>
+
+		<dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>${protoc.version}</version>  <!--이 버전을 아래쪽 ptoroc버전과 맞춰야 함-->
+        </dependency>
+
+		<!-- https://mvnrepository.com/artifact/io.grpc/grpc-protobuf -->
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-protobuf</artifactId>
+			<version>${io.grpc.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.grpc/grpc-stub -->
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-stub</artifactId>
+			<version>${io.grpc.version}</version>
+		</dependency>
+		<!-- metric -->
+        <!-- <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>io.micrometer</groupId>
+		    <artifactId>micrometer-core</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>io.micrometer</groupId>
+		    <artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency> -->
+
+		<dependency>
+			<groupId>com.dev</groupId>
+			<artifactId>fwk</artifactId>
+			<version>dev-0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- swagger-ui -->
+		<dependency>
+		    <groupId>org.springdoc</groupId>
+		    <artifactId>springdoc-openapi-ui</artifactId>
+		    <version>${springdoc.openapi.ui.version}</version>
+		</dependency>
+
+		<!-- test -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- devtool-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<finalName>${project.name}-${hict.app.version}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.4.3</version>
+				<configuration>
+				  <to>
+					<image>nexus-docker.apps.dev.honecloud.co.kr/repository/docker-hosted/codeserver-0</image>
+					<tags>
+						<tag>${image.version}</tag>
+						<tag>latest</tag>
+					</tags>
+					<auth>
+						<username>cloud-native-nexus</username>
+						<password>cloud-native-nexus</password>
+					</auth>
+				  </to>
+				</configuration>
+				
+			  </plugin>
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<configuration>
+					<skipSource>true</skipSource>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-compiler-plugin</artifactId>
+	            <configuration>
+				    <source>${java.version}</source>
+				    <target>${java.version}</target>
+				    <compilerVersion>${java.version}</compilerVersion>
+				    <encoding>${encoding}</encoding>
+				</configuration>
+	        </plugin>
+	        <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+			        <archive>
+			            <compress>true</compress>
+			        </archive>
+			    </configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.xolstice.maven.plugins</groupId>
+				<artifactId>protobuf-maven-plugin</artifactId>
+				<version>${protobuf.maven.plugin.version}</version>
+				<configuration>
+					<protocArtifact>
+						com.google.protobuf:protoc:${protoc.version}:exe:${os.detected.classifier}</protocArtifact>
+					<pluginId>grpc-java</pluginId>
+					<pluginArtifact>
+						io.grpc:protoc-gen-grpc-java:${io.grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
+					<outputBaseDirectory>src/main/java/</outputBaseDirectory>
+                    <outputDirectory>src/main/java/</outputDirectory>
+                    <clearOutputDirectory>false</clearOutputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>client-code-generation</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>server-code-generation</id>
+						<goals>
+							<goal>compile-custom</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+		<extensions>
+		<extension>
+			<groupId>kr.motd.maven</groupId>
+			<artifactId>os-maven-plugin</artifactId>
+			<version>1.7.1</version>
+		</extension>
+		</extensions>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>native-maven-central</id>
+			<url>https://nexus-service.apps.dev.honecloud.co.kr/repository/native-maven-central/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>native-maven-snapshots</id>
+			<url>https://nexus-service.apps.dev.honecloud.co.kr/repository/native-maven-snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>native-maven-releases</id>
+			<url>https://nexus-service.apps.dev.honecloud.co.kr/repository/native-maven-releases/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+    </repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>nexus</id>
+                <url>https://nexus-service.apps.dev.honecloud.co.kr/repository/native-maven-public/</url>
+		</pluginRepository>
+    </pluginRepositories>
+
+</project>

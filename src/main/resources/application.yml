@@ -1,0 +1,197 @@
+project:
+  name: codeserver-n
+  version: 1.0
+  log:
+    name: ${project.name}
+
+server:
+  port: 8081
+  servlet:
+    context-path: /ict
+    encoding:
+      charset: UTF-8
+      force: true
+    session:
+      cookie:
+        name: JSESSIONID
+  tomcat:
+    threads:
+      max: 200
+
+target:
+  domain:
+    smp0: http://codeserver-0-app:8081/ict
+    smp1: http://codeserver-1-app:8081/ict
+    smp2: http://codeserver-2-app:8081/ict
+    smp3: http://codeserver-3-app:8081/ict
+    smp4: http://codeserver-4-app:8081/ict
+    smp5: http://codeserver-5-app:8081/ict
+    smp6: http://codeserver-6-app:8081/ict
+    smp7: http://codeserver-7-app:8081/ict
+    smp8: http://codeserver-8-app:8081/ict
+    smp9: http://codeserver-9-app:8081/ict
+    smp10: http://codeserver-10-app:8081/ict
+    smp11: http://codeserver-11-app:8081/ict
+    smp12: http://codeserver-12-app:8081/ict
+    smp13: http://codeserver-13-app:8081/ict
+    smp14: http://codeserver-14-app:8081/ict
+    smp15: http://codeserver-15-app:8081/ict
+    smp16: http://codeserver-16-app:8081/ict
+    smp17: http://codeserver-17-app:8081/ict
+    smp18: http://codeserver-18-app:8081/ict
+    smp19: http://codeserver-19-app:8081/ict
+    smp20: http://codeserver-20-app:8081/ict
+    smp21: http://codeserver-21-app:8081/ict
+    smp22: http://codeserver-22-app:8081/ict
+    smp23: http://codeserver-23-app:8081/ict
+    smp24: http://codeserver-24-app:8081/ict
+    smp25: http://codeserver-25-app:8081/ict
+    smp26: http://codeserver-26-app:8081/ict
+    smp27: http://codeserver-27-app:8081/ict
+    smp28: http://codeserver-28-app:8081/ict
+    smp29: http://codeserver-29-app:8081/ict
+    smp30: http://codeserver-30-app:8081/ict
+
+
+
+logging:
+  config: classpath:logback-spring.xml
+
+logbook:
+  exclude:
+  - '**/health'
+  - '**/v3/api-docs/**'
+  - '**/v2/api-docs/**'
+  - '**/v1/api-docs/**'
+  - '**/swagger-resources/**'
+  - '**/configuration/security'
+  - '**/swagger'
+  - '**/csrf'
+  - '**/error'
+  - '**/configuration'
+  - '**/swagger-ui.html'
+  - '**/favicon.*'
+  - '**/h2-console/**'
+  - '**/webjars/**'
+  - '**/swagger-ui/**'
+  - '**/swagger-ui/*'
+  - '**/swagger-resources/**'
+  - '**/etrack/exportArchive'
+  - '**/*-stream'
+  - '**/admin/**'
+
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+    tags-sorter: alpha
+
+spring:
+  h2:
+    console:
+      enabled: false
+      settings:
+        web-allow-others: true
+  datasource:
+    driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:postgresql://psql-postgresql:5432/cloudbiz
+    schema: dict
+    pool-name: dict
+    username: cloudbiz
+    password: cloudbiz
+    # url: jdbc:h2:mem:springcoredb
+    # username: sa
+    # password: password
+    # driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    # database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      default_schema: dict
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  cache:
+    redis:
+      key-prefix:
+  autoconfigure:
+    exclude: net.devh.boot.grpc.client.autoconfigure.GrpcDiscoveryClientAutoConfiguration
+      
+
+---
+spring:
+  application:
+    name: ${project.name}
+    version: 2024.09
+  profiles:
+    active: local
+  devtools:
+    livereload:
+      port: 18090
+      enabled: true
+
+server:
+  port: 8081
+
+#log path
+logs:
+  absolute:
+    path: /tmp/${project.name}
+  level:
+    root: INFO
+    com: DEBUG
+  name: hictSampleBoot
+
+grpc:
+  client:
+    hello:
+      adderss: static://${project.name}-app:9090
+      negotiation-type: plaintext
+
+---
+spring:
+  application:
+    name: ${project.name}
+    version: 2024.09
+  profiles:
+    active: 
+      - cloud
+  devtools:
+    livereload:
+      port: 18090
+      enabled: true
+  redis:
+    url: redis-standalone
+    port: 6379
+    password: cloud
+    database: 0
+  kafka:
+    bootstrap-servers: my-cluster-kafka-bootstrap:9092
+    template:
+      default-topic: hict-topic
+    consumer:
+      group-id: ${project.name}
+  
+#log path
+logs:
+  absolute:
+    path: /tmp/${project.name}
+  level:
+    root: INFO
+    com: DEBUG
+  name: ${project.name}
+
+#apm
+apm:
+  test:
+    number: "123"
+
+http:
+  client:
+    connection-time-to-live: 20
